@@ -1,0 +1,11 @@
+#Ignore compiled files
+*.class
+
+#Ignore package files
+*.jar
+*.war
+*.ear
+
+# Ignore logs and temporary files
+*.log
+*.tmp
