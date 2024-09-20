@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 
-class Scanner {
+public class Scanner {
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
     private static final HashMap<String, TokenType> keywords;
