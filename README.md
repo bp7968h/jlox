@@ -20,17 +20,17 @@ cd jlox
 
 2. Compile the interpreter:
 ```
-javac com/craftinginterpreters/lox/*.java
+javac -d out src/lox/*.java
 ```
 
 3. Run the interpreter:
 ```
-java com.craftinginterpreters.lox.Lox
+java -cp out lox.Lox
 ```
 
 4. To run a Lox script, provide the script file as an argument:
 ```
-java com.craftinginterpreters.lox.Lox script.lox
+java -cp out lox.Lox script.lox
 ```
 
 ## Usage
