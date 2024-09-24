@@ -4,13 +4,22 @@ import java.util.List;
 import static lox.TokenType.*;
 
 public class Parser {
-    private static class ParseError extends RuntimeException {}
-    
+    private static class ParseError extends RuntimeException {
+    }
+
     private final List<Token> tokens;
     private int current = 0;
 
     Parser(List<Token> tokens) {
         this.tokens = tokens;
+    }
+
+    Expr parse() {
+        try {
+            return expression();
+        } catch (ParseError error) {
+            return null;
+        }
     }
 
     // expression → equality ;
@@ -62,11 +71,11 @@ public class Parser {
         return expr;
     }
 
-    //factor -> unary (("/" | "*") unary)* ;
+    // factor -> unary (("/" | "*") unary)* ;
     private Expr factor() {
         Expr expr = unary();
 
-        while(match(SLASH, STAR)) {
+        while (match(SLASH, STAR)) {
             Token operator = previous();
             Expr right = unary();
             expr = new Expr.Binary(expr, operator, right);
@@ -75,7 +84,7 @@ public class Parser {
         return expr;
     }
 
-    //unary          → ( "!" | "-" ) unary | primary ;
+    // unary → ( "!" | "-" ) unary | primary ;
     private Expr unary() {
         if (match(BANG, MINUS)) {
             Token operator = previous();
@@ -85,7 +94,7 @@ public class Parser {
         return primary();
     }
 
-    //primary        → NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
+    // primary → NUMBER | STRING | "true" | "false" | "nil" | "(" expression ")" ;
     private Expr primary() {
         if (match(FALSE)) {
             return new Expr.Literal(false);
@@ -105,7 +114,7 @@ public class Parser {
             return new Expr.Grouping(expr);
         }
 
-        return new Expr.Literal(null);
+        throw error(peek(), "Expect expression.");
     }
 
     private Token consume(TokenType type, String message) {
@@ -119,6 +128,30 @@ public class Parser {
     private ParseError error(Token token, String message) {
         Lox.error(token, message);
         return new ParseError();
+    }
+
+    private void synchronize() {
+        advance();
+
+        while (!isAtEnd()) {
+            if (previous().type == SEMICOLON) {
+                return;
+            }
+
+            switch (peek().type) {
+                case CLASS:
+                case FUN:
+                case VAR:
+                case FOR:
+                case IF:
+                case WHILE:
+                case PRINT:
+                case RETURN:
+                    return;
+            }
+
+            advance();
+        }
     }
 
     // checks to see if the current token has any of the given types

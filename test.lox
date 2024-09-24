@@ -1,14 +1,15 @@
+10 + 10 * 10 / 2 - 4;
 // This is comment
-print "Hello, world";
+//print "Hello, world";
 
 /* This is multi line comment 
     This is comment as well
 */
-{
-    print "First";
-    print "Second";
-    var test = 10;
-}
+//{
+//    print "First";
+//    print "Second";
+//10 + 10 * (1 + 2);
+//}
 /* This is multi line comment 
     This is comment as well
 */
