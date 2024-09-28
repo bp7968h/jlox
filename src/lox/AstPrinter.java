@@ -45,4 +45,9 @@ public class AstPrinter implements Expr.Visitor<String>{
     public String visitVariableExpr(Expr.Variable var) {
         return var.toString();
     }
+
+    @Override
+    public String visitAssignExpr(Expr.Assign ass) {
+        return ass.toString();
+    }
 }

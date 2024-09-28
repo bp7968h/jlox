@@ -17,7 +17,7 @@ public class Parser {
 
     List<Stmt> parse() {
         List<Stmt> statements = new ArrayList<>();
-        while(!isAtEnd()) {
+        while (!isAtEnd()) {
             statements.add(declaration());
         }
 
@@ -30,10 +30,10 @@ public class Parser {
                 return varDeclaration();
             }
             return statement();
-          } catch (ParseError error) {
+        } catch (ParseError error) {
             synchronize();
             return null;
-          }
+        }
     }
 
     private Stmt varDeclaration() {
@@ -53,6 +53,10 @@ public class Parser {
             return printStatement();
         }
 
+        if (match(LEFT_BRACE)) {
+            return new Stmt.Block(block());
+        }
+
         return expressionStatement();
     }
 
@@ -68,9 +72,39 @@ public class Parser {
         return new Stmt.Expression(expr);
     }
 
+    private List<Stmt> block() {
+        List<Stmt> statements = new ArrayList<>();
+    
+        while (!check(RIGHT_BRACE) && !isAtEnd()) {
+          statements.add(declaration());
+        }
+    
+        consume(RIGHT_BRACE, "Expect '}' after block.");
+        return statements;
+      }
+
     // expression → equality ;
     private Expr expression() {
-        return equality();
+        // return equality();
+        return assignment();
+    }
+
+    private Expr assignment() {
+        Expr expr = equality();
+
+        if (match(EQUAL)) {
+            Token equals = previous();
+            Expr value = assignment();
+
+            if (expr instanceof Expr.Variable) {
+                Token name = ((Expr.Variable) expr).name;
+                return new Expr.Assign(name, value);
+            }
+
+            error(equals, "Invalid assignment target.");
+        }
+
+        return expr;
     }
 
     // equality → comparison ( ( "!=" | "==" ) comparison )* ;
@@ -96,10 +130,9 @@ public class Parser {
         Expr expr = term();
 
         while (match(GREATER,
-                     GREATER_EQUAL,
-                     LESS,
-                     LESS_EQUAL
-                     )) {
+                GREATER_EQUAL,
+                LESS,
+                LESS_EQUAL)) {
             Token operator = previous();
             Expr right = term();
             expr = new Expr.Binary(expr, operator, right);
@@ -227,19 +260,19 @@ public class Parser {
         advance();
 
         while (!isAtEnd()) {
-            switch(peek().type) {
-            case SEMICOLON:
-                // if currently at semicolon, consume it, then return
-                advance();
-            case CLASS:
-            case FUN:
-            case VAR:
-            case FOR:
-            case IF:
-            case WHILE:
-            case PRINT:
-            case RETURN:
-                return;
+            switch (peek().type) {
+                case SEMICOLON:
+                    // if currently at semicolon, consume it, then return
+                    advance();
+                case CLASS:
+                case FUN:
+                case VAR:
+                case FOR:
+                case IF:
+                case WHILE:
+                case PRINT:
+                case RETURN:
+                    return;
             }
 
             advance();
