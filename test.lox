@@ -1,15 +1,6 @@
-10 + 10 * 10 / 2 - 4;
-// This is comment
-//print "Hello, world";
-
-/* This is multi line comment 
-    This is comment as well
+/*asdasd
+asdsad
 */
-//{
-//    print "First";
-//    print "Second";
-//10 + 10 * (1 + 2);
-//}
-/* This is multi line comment 
-    This is comment as well
-*/
+print "one";
+print true;
+print 2 + 1;
