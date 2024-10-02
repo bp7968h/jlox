@@ -50,4 +50,9 @@ public class AstPrinter implements Expr.Visitor<String>{
     public String visitAssignExpr(Expr.Assign ass) {
         return ass.toString();
     }
+
+    @Override
+    public String visitLogicalExpr(Expr.Logical log) {
+        return log.toString();
+    }
 }
