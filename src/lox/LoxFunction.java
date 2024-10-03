@@ -22,7 +22,11 @@ public class LoxFunction implements LoxCallable {
         }
 
         // execute the body of the function in new function-local environment
-        interpreter.executeBlock(declaration.body, environment);
+        try {
+            interpreter.executeBlock(declaration.body, environment);
+        } catch (Return returnValue) {
+            return returnValue.value;
+        }
 
         // discards that function-local environment and restores the previous one that
         // was active back at the callsite
